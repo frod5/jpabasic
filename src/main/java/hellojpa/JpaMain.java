@@ -20,19 +20,19 @@ public class JpaMain {
         tx.begin();
 
         try {
-            Member memberA = new Member();
-            memberA.setId(4L);
-            memberA.setName("hello4");
+            Member findMember = em.find(Member.class, 3L);
+            findMember.setName("update3L");
 
-            Member memberB = new Member();
-            memberB.setId(5L);
-            memberB.setName("hello5");
+            //em.persist(findMember)를 해야되지 않을까??? 보통 생각하기론..
+            //하지만 jpa는 find를 한 후 영속성컨텍스트에 저장된 후 .set으로 데이터를 변경한 후 commit을 하면 변경된 것을 감지하여 update쿼리를 날린다.
+            //변경감지(dirty checking)
 
-            em.persist(memberA);
-            em.persist(memberB);
-            System.out.println("==================");
-            //여기까지 insert SQL을 날리지 않는다.
-            //쓰기지연 SQL저장소에 쿼리를 모아둔다.
+            //commit을하면 flush가 호출되고
+            //스냅샷은 영속성 컨텍스트에 첨에 들어간 시점의 엔티티이다.
+            //변경한 엔티티와 스냅샷을 비교한다.
+            //update쿼리를 쓰기지연 sql저장소에 둔다.
+            //commit할때 모아둔 쿼리가 커밋된다.
+
 
             //트랜잭션 커밋, 커밋을 해야 쿼리가 날라간다.
             tx.commit();
