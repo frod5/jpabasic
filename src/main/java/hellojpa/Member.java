@@ -3,6 +3,7 @@ package hellojpa;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+//JPA Entity는 Java reflection을 사용해서 기본생성자를 넣어주어야한다.
 @Entity
 public class Member {
 

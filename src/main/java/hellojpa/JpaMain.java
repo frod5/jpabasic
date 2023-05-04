@@ -20,25 +20,19 @@ public class JpaMain {
         tx.begin();
 
         try {
+            Member memberA = new Member();
+            memberA.setId(4L);
+            memberA.setName("hello4");
 
-//            Member member = new Member();
-//            member.setId(3L);
-//            member.setName("helloABC");
-//
-//            em.persist(member);
+            Member memberB = new Member();
+            memberB.setId(5L);
+            memberB.setName("hello5");
 
-
-            //id가 3인 객체를 생성 후 조회 시, 영속성에서 조회가 되서 select쿼리가 나가지않는다.
-            //저장코드를 주석한 후 find하면 첫번째는 영속성 컨텍스트에 없어서 실제 쿼리를 날려 db조회를 한다.
-            Member findMember1 = em.find(Member.class, 3L);
-            System.out.println("findMember1.id = " + findMember1.getId());
-
-            //같은 키값으로 조회 시, 영속성 컨텍스트에 1차캐싱되어 실제 쿼리를 날리지 않는다.
-            Member findMember2 = em.find(Member.class, 3L);
-            System.out.println("findMember2.id = " + findMember2.getId());
-
-            //1차 캐시로 반복 가능한 읽기(REPEATABLE READ) 등급의 트랜잭션 격리 수준을 데이터베이스가 아닌 애플리케이션 차원에서 제공
-            System.out.println("영속성 동일보장 = " + (findMember1==findMember2)); //true
+            em.persist(memberA);
+            em.persist(memberB);
+            System.out.println("==================");
+            //여기까지 insert SQL을 날리지 않는다.
+            //쓰기지연 SQL저장소에 쿼리를 모아둔다.
 
             //트랜잭션 커밋, 커밋을 해야 쿼리가 날라간다.
             tx.commit();
