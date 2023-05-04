@@ -20,31 +20,25 @@ public class JpaMain {
         tx.begin();
 
         try {
-            //영속성 컨텍스트 학습
-            //영속성 컨텍스트란?
-            //• JPA를 이해하는데 가장 중요한 용어
-            //• “엔티티를 영구 저장하는 환경”이라는 뜻
-            //• EntityManager.persist(entity);
-            //• 영속성 컨텍스트는 논리적인 개념
-            //• 눈에 보이지 않는다.
-            //• 엔티티 매니저를 통해서 영속성 컨텍스트에 접근
 
-            //EntityManager에
+//            Member member = new Member();
+//            member.setId(3L);
+//            member.setName("helloABC");
+//
+//            em.persist(member);
 
-            //비영속 start - 단순히 객체 생성한 상태 (영속성 컨텍스트와 전혀 관계가 없는 새로운 상태)
-            Member member = new Member();
-            member.setId(3L);
-            member.setName("helloABC");
-            //비영속 end
 
-            //영속 (DB에 저장하는것이 아닌 영속성 컨텍스트에 저장하는 것.), 영속성 컨텍스트에 관리되는 상태
-            em.persist(member);
+            //id가 3인 객체를 생성 후 조회 시, 영속성에서 조회가 되서 select쿼리가 나가지않는다.
+            //저장코드를 주석한 후 find하면 첫번째는 영속성 컨텍스트에 없어서 실제 쿼리를 날려 db조회를 한다.
+            Member findMember1 = em.find(Member.class, 3L);
+            System.out.println("findMember1.id = " + findMember1.getId());
 
-            //준영속 (영속성 컨텍스트에 저장되었다가 분리된 상태), 영속성 컨텍스트에서 지운다, 회원 엔티티를 영속성 컨텍스트에서 분리
-//            em.detach(member);
+            //같은 키값으로 조회 시, 영속성 컨텍스트에 1차캐싱되어 실제 쿼리를 날리지 않는다.
+            Member findMember2 = em.find(Member.class, 3L);
+            System.out.println("findMember2.id = " + findMember2.getId());
 
-            //객체를 삭제한 상태(삭제)
-//            em.remove(member);
+            //1차 캐시로 반복 가능한 읽기(REPEATABLE READ) 등급의 트랜잭션 격리 수준을 데이터베이스가 아닌 애플리케이션 차원에서 제공
+            System.out.println("영속성 동일보장 = " + (findMember1==findMember2)); //true
 
             //트랜잭션 커밋, 커밋을 해야 쿼리가 날라간다.
             tx.commit();
