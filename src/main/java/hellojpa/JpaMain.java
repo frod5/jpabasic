@@ -20,40 +20,33 @@ public class JpaMain {
         tx.begin();
 
         try {
-            //멤버 객체 생성
-//            Member member = new Member();
-//            member.setId(2L);
-//            member.setName("helloB");
+            //영속성 컨텍스트 학습
+            //영속성 컨텍스트란?
+            //• JPA를 이해하는데 가장 중요한 용어
+            //• “엔티티를 영구 저장하는 환경”이라는 뜻
+            //• EntityManager.persist(entity);
+            //• 영속성 컨텍스트는 논리적인 개념
+            //• 눈에 보이지 않는다.
+            //• 엔티티 매니저를 통해서 영속성 컨텍스트에 접근
 
-            //멤버 저장
-//            em.persist(member);
+            //EntityManager에
 
-            //멤버 목록 조회 (JPQL)
-            //JPQL
-            //• JPA를 사용하면 엔티티 객체를 중심으로 개발
-            //• 문제는 검색 쿼리
-            //• 검색을 할 때도 테이블이 아닌 엔티티 객체를 대상으로 검색
-            //• 모든 DB 데이터를 객체로 변환해서 검색하는 것은 불가능
-            //• 애플리케이션이 필요한 데이터만 DB에서 불러오려면 결국 검색 조건이 포함된 SQL이 필요
+            //비영속 start - 단순히 객체 생성한 상태 (영속성 컨텍스트와 전혀 관계가 없는 새로운 상태)
+            Member member = new Member();
+            member.setId(3L);
+            member.setName("helloABC");
+            //비영속 end
 
-            // JPA는 SQL을 추상화한 JPQL이라는 객체 지향 쿼리 언어 제공
-            //• SQL과 문법 유사, SELECT, FROM, WHERE, GROUP BY, HAVING, JOIN 지원
-            //• JPQL은 엔티티 객체를 대상으로 쿼리
-            //• SQL은 데이터베이스 테이블을 대상으로 쿼리
-            List<Member> findMembers = em.createQuery("select m from Member m", Member.class)
-                    .getResultList();
+            //영속 (DB에 저장하는것이 아닌 영속성 컨텍스트에 저장하는 것.), 영속성 컨텍스트에 관리되는 상태
+            em.persist(member);
 
-            for (Member findMember : findMembers) {
-                System.out.println("findMember.name = " + findMember.getName());
-            }
+            //준영속 (영속성 컨텍스트에 저장되었다가 분리된 상태), 영속성 컨텍스트에서 지운다, 회원 엔티티를 영속성 컨텍스트에서 분리
+//            em.detach(member);
 
-            //멤버 조회(단건)
-//            Member findMember = em.find(Member.class, 1L);
+            //객체를 삭제한 상태(삭제)
+//            em.remove(member);
 
-            //멤버 수정
-//            findMember.setName("helloC");
-
-            //트랜잭션 커밋
+            //트랜잭션 커밋, 커밋을 해야 쿼리가 날라간다.
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
