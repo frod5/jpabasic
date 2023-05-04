@@ -52,5 +52,12 @@ public class JpaMain {
         //• 엔티티 매니저 팩토리는 하나만 생성해서 애플리케이션 전체에서 공유
         //• 엔티티 매니저는 쓰레드간에 공유X (사용하고 버려야 한다).
         //• JPA의 모든 데이터 변경은 트랜잭션 안에서 실행
+
+        //영속성 컨텍스트의 이점
+        //• 1차 캐시
+        //• 동일성(identity) 보장
+        //• 트랜잭션을 지원하는 쓰기 지연(transactional write-behind)
+        //• 변경 감지(Dirty Checking)
+        //• 지연 로딩(Lazy Loading)
     }
 }
