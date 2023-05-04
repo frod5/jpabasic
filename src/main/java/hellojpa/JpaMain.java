@@ -20,46 +20,22 @@ public class JpaMain {
         tx.begin();
 
         try {
-            Member member = new Member();
-            member.setId(10L);
-            member.setName("hello10L");
+            Member findMember = em.find(Member.class, 3L);
+            findMember.setName("updateName");
 
-            em.persist(member);
+            //준영속
+            //em.detach()를 하지않으면 영속성 컨텍스트에서 스냅샷과 비교해 달라져 변경감지 하여 update쿼리를 날릴것이다.
+            //하지만 영속성 컨텍스트에서 분리하여 update쿼리가 날라가지 않는다. (select 쿼리만 날라감.)
 
-            //영속성 컨텍스트의 변경내용을 데이터베이스에 반영
-            // em.flush()가 호출되면,
-            // 변경 감지, 수정된 엔티티 쓰기 지연 SQL 저장소에 등록, 쓰기 지연 SQL 저장소의 쿼리를 데이터베이스에 전송(등록, 수정, 삭제 쿼리)을 하게된다.
+            //준영속 상태로 만드는 방법
+            // • em.detach(entity) 특정 엔티티만 준영속 상태로 전환
+            //• em.clear() 영속성 컨텍스트를 완전히 초기화
+            //• em.close() 영속성 컨텍스트를 종료
+//            em.detach(findMember);
+            em.clear();
 
-            //flush를 하는 방법
-            //• em.flush() - 직접 호출
-            //• 트랜잭션 커밋(tx.commit()) - 플러시 자동 호출
-            //• JPQL 쿼리 실행 - 플러시 자동 호출
-
-            //flush를 하더라도 1차캐시는 유지된다.
-//            em.flush();
-
-            //em.setFlushMode(FlushModeType.COMMIT)
-            //• FlushModeType.AUTO 커밋이나 쿼리를 실행할 때 플러시 (기본값)
-            //• FlushModeType.COMMIT 커밋할 때만 플러시
-
-            //JPQL 쿼리 실행 - 플러시 자동 호출에 대한 설명
-            //em.persist(memberA)
-            //em.persist(memberB)
-            //em.persist(memberC)
-
-            //JPQL 쿼리 호출
-            //em.createQuery("select m from Member m", Member.class);
-            //List<Member> members= query.getResultList();
-
-            //이렇게하면 memberA,memberB,memberC는 기본적으로 flush()를 호출하지 않았지만,
-            //JPQL이 flush()를 호출하여, memberA,memberB,memberC에 대한 insert쿼리들이 날라간다.
-            //물론 커밋전에는 데이터베이스에 반영이 되지않는다. 커밋이 된다면 db반영.
-
-
-            //주의!
-            //• 영속성 컨텍스트를 비우지 않음
-            //• 영속성 컨텍스트의 변경내용을 데이터베이스에 동기화
-            //• 트랜잭션이라는 작업 단위가 중요 -> 커밋 직전에만 동기화 하면 됨
+            //clear이후 다시 조회하더라도 같은 키값의 영속성컨텍스트가 없어서 다시 select 쿼리가 날라간다.
+            Member findMember2 = em.find(Member.class, 3L);
 
             //트랜잭션 커밋, 커밋을 해야 쿼리가 날라간다.
             tx.commit();
