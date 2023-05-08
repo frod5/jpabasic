@@ -13,7 +13,7 @@ public class Team {
     private Long id;
     private String name;
 
-    @OneToMany(mappedBy = "team")   // mappedBy = "team" 매핑되어있는 객체(Member1)의 변수명.
+    @OneToMany(mappedBy = "team")   // mappedBy = "team" 매핑되어있는 객체(Member1)의 변수명. 해당 변수를 set해도 등록,수정이 되지않음
     private List<Member1> members = new ArrayList<>();
 
     public List<Member1> getMembers() {

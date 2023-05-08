@@ -17,7 +17,7 @@ public class Member1 {
 //    @Column(name = "TEAM_ID")
 //    private Long teamId;
 
-    @ManyToOne  //연관관계 매핑 , ManyToOne의 default fetch타입은 EAGER
+    @ManyToOne  //연관관계 매핑 , ManyToOne의 default fetch타입은 EAGER, 외래키가 있는곳을 연관관계의 주인으로 설정하는 것이 좋다.
     @JoinColumn(name = "TEAM_ID")
     private Team team;
 
