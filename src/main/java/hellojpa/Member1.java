@@ -13,8 +13,21 @@ public class Member1 {
     private Long id;
     @Column(name = "USERNAME")
     private String username;
-    @Column(name = "TEAM_ID")
-    private Long teamId;
+
+//    @Column(name = "TEAM_ID")
+//    private Long teamId;
+
+    @ManyToOne  //연관관계 매핑 , ManyToOne의 default fetch타입은 EAGER
+    @JoinColumn(name = "TEAM_ID")
+    private Team team;
+
+    public Team getTeam() {
+        return team;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
+    }
 
     public Long getId() {
         return id;
@@ -30,13 +43,5 @@ public class Member1 {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public Long getTeamId() {
-        return teamId;
-    }
-
-    public void setTeamId(Long teamId) {
-        this.teamId = teamId;
     }
 }

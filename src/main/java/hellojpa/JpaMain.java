@@ -30,16 +30,21 @@ public class JpaMain {
             //Member 저장
             Member1 member1 = new Member1();
             member1.setUsername("Member1");
-            member1.setTeamId(team.getId());
+            member1.setTeam(team);
+//            member1.setTeamId(team.getId());
             em.persist(member1);
+
+
+            //select 쿼리를 보기위해 영속성 컨텍스트 초기화.
+            em.flush();
+            em.clear();
 
             //member 조회
             Member1 findMember = em.find(Member1.class, member1.getId());
-            Long findTeamId = findMember.getTeamId();
-
 
             //member가 소속된 team 조회
-            Team findTeam = em.find(Team.class, findTeamId);
+            Team findTeam = findMember.getTeam();
+            System.out.println("findTeam = " + findTeam.getName());
 
             tx.commit();
         } catch (Exception e) {
