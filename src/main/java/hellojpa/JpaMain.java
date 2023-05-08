@@ -20,22 +20,12 @@ public class JpaMain {
         tx.begin();
 
         try {
-            Member findMember = em.find(Member.class, 3L);
-            findMember.setName("updateName");
+           Member member = new Member();
+           member.setId(5L);
+           member.setUsername("A");
+           member.setRoleType(RoleType.USER);
 
-            //준영속
-            //em.detach()를 하지않으면 영속성 컨텍스트에서 스냅샷과 비교해 달라져 변경감지 하여 update쿼리를 날릴것이다.
-            //하지만 영속성 컨텍스트에서 분리하여 update쿼리가 날라가지 않는다. (select 쿼리만 날라감.)
-
-            //준영속 상태로 만드는 방법
-            // • em.detach(entity) 특정 엔티티만 준영속 상태로 전환
-            //• em.clear() 영속성 컨텍스트를 완전히 초기화
-            //• em.close() 영속성 컨텍스트를 종료
-//            em.detach(findMember);
-            em.clear();
-
-            //clear이후 다시 조회하더라도 같은 키값의 영속성컨텍스트가 없어서 다시 select 쿼리가 날라간다.
-            Member findMember2 = em.find(Member.class, 3L);
+           em.persist(member);
 
             //트랜잭션 커밋, 커밋을 해야 쿼리가 날라간다.
             tx.commit();
