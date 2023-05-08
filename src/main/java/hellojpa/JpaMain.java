@@ -21,13 +21,19 @@ public class JpaMain {
 
         try {
            Member member = new Member();
-           member.setId(5L);
            member.setUsername("A");
            member.setRoleType(RoleType.USER);
 
+           System.out.println("===============1");
            em.persist(member);
+           System.out.println("===============2");
 
-            //트랜잭션 커밋, 커밋을 해야 쿼리가 날라간다.
+           //기본키 전략 - IDENTITY의 특징.
+           //• JPA는 보통 트랜잭션 커밋 시점에 INSERT SQL 실행
+           //• AUTO_ INCREMENT는 데이터베이스에 INSERT SQL을 실행한 이후에 ID 값을 알 수 있음
+           //• IDENTITY 전략은 em.persist() 시점에 즉시 INSERT SQL 실행하고 DB에서 식별자를 조회
+
+            //트랜잭션 커밋, 커밋을 해야 쿼리가 날라간다. 예외적으로 기본키생성전략이 IDENTITY일떄는 em.persist()시 쿼리가 날라간다.
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
