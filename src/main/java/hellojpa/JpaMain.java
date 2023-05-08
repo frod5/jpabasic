@@ -1,7 +1,6 @@
 package hellojpa;
 
 import javax.persistence.*;
-import java.util.List;
 
 public class JpaMain {
     public static void main(String[] args) {
@@ -20,12 +19,12 @@ public class JpaMain {
         tx.begin();
 
         try {
-           Member member = new Member();
-           member.setUsername("A");
-           member.setRoleType(RoleType.USER);
+           Member1 member1 = new Member1();
+           member1.setUsername("A");
+           member1.setRoleType(RoleType.USER);
 
            System.out.println("===============1");
-           em.persist(member);
+           em.persist(member1);
            System.out.println("===============2");
 
            //기본키 전략 - IDENTITY의 특징.
