@@ -1,7 +1,6 @@
 package hellojpa;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 public class JpaMain {
     public static void main(String[] args) {
@@ -20,12 +19,24 @@ public class JpaMain {
         tx.begin();
 
         try {
-            Member1 member = new Member1();
-            member.setCreatedBy("kim");
-            member.setCreatedDate(LocalDateTime.now());
-            member.setUsername("user1");
+            Member1 member1 = new Member1();
+            member1.setUsername("hello");
 
-            em.persist(member);
+            em.persist(member1);
+
+            em.flush();
+            em.clear();
+
+            //em.find
+//            Member1 findMember = em.find(Member1.class, member1.getId());
+//            System.out.println("findMember.id = " + findMember.getId());
+//            System.out.println("findMember.username = " + findMember.getUsername());
+
+            //em.getReference()  select 쿼리조회 X sout으로 찍기 전까지는
+            Member1 findMember = em.getReference(Member1.class, member1.getId());
+            System.out.println("findMember.getClass = " + findMember.getClass());
+            System.out.println("findMember.id = " + findMember.getId());
+            System.out.println("findMember.username = " + findMember.getUsername());
 
             tx.commit();
         } catch (Exception e) {
@@ -49,4 +60,5 @@ public class JpaMain {
         //• 변경 감지(Dirty Checking)
         //• 지연 로딩(Lazy Loading)
     }
+
 }
