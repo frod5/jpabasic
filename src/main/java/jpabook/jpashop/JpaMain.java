@@ -1,7 +1,6 @@
 package jpabook.jpashop;
 
-import jpabook.jpashop.domain.Order;
-import jpabook.jpashop.domain.OrderItem;
+import jpabook.jpashop.domain.Book;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -25,16 +24,11 @@ public class JpaMain {
         tx.begin();
 
         try {
-            Order order = new Order();
-            em.persist(order);
-//            order.addOrderItem(new OrderItem()); 양방향 연관관계 둘다 입력값 넣어주는 양방향 매핑 편의 메소드 생성.
+            Book book = new Book();
+            book.setName("JPA");
+            book.setAuthor("김영한");
 
-            OrderItem orderItem = new OrderItem();
-            orderItem.setOrder(order);
-            em.persist(orderItem);
-
-            //JPA설계시 단방향부터 설계하고, 비지니스에 따라 양방향으로 매핑하는걸 추천.
-            //단방향 설계가 가장 중요하다.
+            em.persist(book);
 
             tx.commit();
         } catch (Exception e) {

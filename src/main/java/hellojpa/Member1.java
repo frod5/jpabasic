@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 //JPA Entity는 Java reflection을 사용해서 기본생성자를 넣어주어야한다.
 @Entity
-public class Member1 extends BaseEntity {
+public class Member1 extends BaseEntity1 {
 
     @Id //기본키 직접 할당할떄는 @Id만 사용.
     @GeneratedValue
