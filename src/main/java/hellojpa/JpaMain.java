@@ -30,8 +30,13 @@ public class JpaMain {
             em.flush();
             em.clear();
 
-            Movie findMovie = em.find(Movie.class, movie.getId());
-            System.out.println("findMovie = " + findMovie.getName());
+//            Movie findMovie = em.find(Movie.class, movie.getId());
+//            System.out.println("findMovie = " + findMovie.getName());
+
+            //구체클래스 마다 테이블 전략의 경우 부모클래스를 조회하면, 상속하고 있는 모든 클래스를 UNION 쿼리를 날린다.
+            Item1 item1 = em.find(Item1.class, movie.getId());
+            System.out.println("item1 = " + item1);
+
 
             tx.commit();
         } catch (Exception e) {
