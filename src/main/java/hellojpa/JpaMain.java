@@ -1,6 +1,7 @@
 package hellojpa;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 public class JpaMain {
     public static void main(String[] args) {
@@ -19,24 +20,12 @@ public class JpaMain {
         tx.begin();
 
         try {
-            Movie movie = new Movie();
-            movie.setDirector("aaaa");
-            movie.setActor("bbbb");
-            movie.setName("바람과함께사라지디");
-            movie.setPrice(10000);
+            Member1 member = new Member1();
+            member.setCreatedBy("kim");
+            member.setCreatedDate(LocalDateTime.now());
+            member.setUsername("user1");
 
-            em.persist(movie);
-
-            em.flush();
-            em.clear();
-
-//            Movie findMovie = em.find(Movie.class, movie.getId());
-//            System.out.println("findMovie = " + findMovie.getName());
-
-            //구체클래스 마다 테이블 전략의 경우 부모클래스를 조회하면, 상속하고 있는 모든 클래스를 UNION 쿼리를 날린다.
-            Item1 item1 = em.find(Item1.class, movie.getId());
-            System.out.println("item1 = " + item1);
-
+            em.persist(member);
 
             tx.commit();
         } catch (Exception e) {
