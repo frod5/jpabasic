@@ -1,7 +1,6 @@
 package hellojpa;
 
 import javax.persistence.*;
-import java.util.List;
 
 public class JpaMain {
     public static void main(String[] args) {
@@ -20,34 +19,33 @@ public class JpaMain {
         tx.begin();
 
         try {
-            //연관 관계 없을 떄
 
             //Team 저장
             Team team = new Team();
             team.setName("TeamA");
             em.persist(team);
 
-
             //Member 저장
             Member1 member1 = new Member1();
             member1.setUsername("Member1");
-            member1.setTeam(team);
-//            member1.setTeamId(team.getId());
+
+            //순수한 객체 관계를 고려하면 항상 양쪽다 값을 입력해야 한다.
+            //team.getMembers().add(member1); // 역방향(주인이 아닌 방향)만 연관관계 설정. db에 insert되지않음 mapped by는 읽기전용 가짜매핑이기 떄문이다.
+            member1.changeTeam(team); //양방향 매핑시 연관관계의 주인에 값을 입력해야 한다. 연관관계의 주인에 값 설정.
+
             em.persist(member1);
 
+//            team.addMember(member1);
+
+            //양방향 연관관계 주의 - 실습
+            //• 순수 객체 상태를 고려해서 항상 양쪽에 값을 설정하자
+            //• 연관관계 편의 메소드를 생성하자 ex) changeTeam() 또는 team.addMember() 둘중에 하나를 만들어서 양쪽다 값을 입력하도록.
+            //• 양방향 매핑시에 무한 루프를 조심하자
+            //• 예: toString(), lombok, JSON 생성 라이브러리
 
             //select 쿼리를 보기위해 영속성 컨텍스트 초기화.
-            em.flush();
-            em.clear();
-
-            //member 조회
-            Member1 findMember = em.find(Member1.class, member1.getId());
-
-            //member가 소속한 팀의 소속된 멤버 조회
-            List<Member1> members = findMember.getTeam().getMembers();
-            for (Member1 member : members) {
-                System.out.println("member = " + member.getUsername());
-            }
+//            em.flush();
+//            em.clear();
 
             tx.commit();
         } catch (Exception e) {
