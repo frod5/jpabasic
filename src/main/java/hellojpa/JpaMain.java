@@ -1,7 +1,6 @@
 package hellojpa;
 
 import javax.persistence.*;
-import java.util.List;
 
 public class JpaMain {
     public static void main(String[] args) {
@@ -22,7 +21,7 @@ public class JpaMain {
         try {
             Member1 member = new Member1();
             member.setUsername("hello");
-            member.setHomeAddress(new Address("homeCity","street","10000"));
+            member.setHomeAddress(new Address1("homeCity","street","10000"));
 
             member.getFavoriteFoods().add("치킨");
             member.getFavoriteFoods().add("피자");

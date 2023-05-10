@@ -3,24 +3,24 @@ package hellojpa;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "ADDRESS")
+@Table(name = "ADDRESS1")
 public class AddressEntity {
 
     @Id
     @GeneratedValue
     private Long id;
 
-    private Address address;
+    private Address1 address1;
 
     public AddressEntity() {
     }
 
     public AddressEntity(String city, String street, String zipcode) {
-        this.address = new Address(city,street,zipcode);
+        this.address1 = new Address1(city,street,zipcode);
     }
 
-    public AddressEntity(Address address) {
-        this.address = address;
+    public AddressEntity(Address1 address1) {
+        this.address1 = address1;
     }
 
     public Long getId() {
@@ -31,11 +31,11 @@ public class AddressEntity {
         this.id = id;
     }
 
-    public Address getAddress() {
-        return address;
+    public Address1 getAddress() {
+        return address1;
     }
 
-    public void setAddress(Address address) {
-        this.address = address;
+    public void setAddress(Address1 address1) {
+        this.address1 = address1;
     }
 }

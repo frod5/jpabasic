@@ -1,7 +1,6 @@
 package hellojpa;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -27,7 +26,7 @@ public class Member1 extends BaseEntity1 {
 
     //Address
     @Embedded
-    private Address homeAddress;
+    private Address1 homeAddress1;
 
     @ElementCollection // 값타입을 하나이상 저장할때 사용. 값타입 컬렉션,  값 타입 컬렉션은 default 지연로딩
     @CollectionTable(name = "FAVORITE_FOOD", joinColumns = @JoinColumn(name = "MEMBER_ID"))
@@ -51,7 +50,7 @@ public class Member1 extends BaseEntity1 {
             @AttributeOverride(name = "street", column =@Column(name = "WORK_STREET")),
             @AttributeOverride(name = "zipcode", column =@Column(name = "WORK_ZIPCODE"))
     })
-    private Address workAddress;
+    private Address1 workAddress1;
 
     @ManyToOne(fetch = FetchType.LAZY)  //연관관계 매핑 , ManyToOne의 default fetch타입은 EAGER, 외래키가 있는곳을 연관관계의 주인으로 설정하는 것이 좋다.
     @JoinColumn(name = "TEAM_ID")
@@ -94,12 +93,12 @@ public class Member1 extends BaseEntity1 {
         this.workPeriod = workPeriod;
     }
 
-    public Address getHomeAddress() {
-        return homeAddress;
+    public Address1 getHomeAddress() {
+        return homeAddress1;
     }
 
-    public void setHomeAddress(Address homeAddress) {
-        this.homeAddress = homeAddress;
+    public void setHomeAddress(Address1 homeAddress1) {
+        this.homeAddress1 = homeAddress1;
     }
 
     public Set<String> getFavoriteFoods() {
@@ -127,11 +126,11 @@ public class Member1 extends BaseEntity1 {
         this.addressHistory = addressHistory;
     }
 
-    public Address getWorkAddress() {
-        return workAddress;
+    public Address1 getWorkAddress() {
+        return workAddress1;
     }
 
-    public void setWorkAddress(Address workAddress) {
-        this.workAddress = workAddress;
+    public void setWorkAddress(Address1 workAddress1) {
+        this.workAddress1 = workAddress1;
     }
 }
