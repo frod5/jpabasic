@@ -20,34 +20,18 @@ public class JpaMain {
         tx.begin();
 
         try {
-            Child child1 = new Child();
-            Child child2 = new Child();
+            Member1 member = new Member1();
+            member.setUsername("hello");
+            member.setHomeAddress(new Address("city","street","zipcode"));  //임베디드 타입 사용
+            member.setWorkPeriod(new Period());  //임베디드 타입 사용
 
-            Parent parent = new Parent();
-            parent.addChild(child1);
-            parent.addChild(child2);
+            //임베디드 타입과 테이블 매핑
+            //• 임베디드 타입은 엔티티의 값일 뿐이다.
+            //• 임베디드 타입을 사용하기 전과 후에 매핑하는 테이블은 같다.
+            //• 객체와 테이블을 아주 세밀하게(find-grained) 매핑하는 것이 가능
+            //• 잘 설계한 ORM 애플리케이션은 매핑한 테이블의 수보다 클래스의 수가 더 많음
 
-            em.persist(parent);  // parent만 persist해도 child까지 persist된다. cascade = CascadeType.ALL
-
-            //영속성 전이: CASCADE - 주의!
-            //• 영속성 전이는 연관관계를 매핑하는 것과 아무 관련이 없음
-            //• 엔티티를 영속화할 때 연관된 엔티티도 함께 영속화하는 편리함을 제공할 뿐
-
-            em.flush();
-            em.clear();
-
-            //고아객체 - 참조가 제거된 엔티티는 다른 곳에서 참조하지 않는 고아객체로 보고 삭제하는 기능.
-            //참조하는곳이 하나일때 (Child가 Parent외에 다른곳에 쓰이면 안됨)
-            //특정 엔티티가 개인 소유할때 사용
-            //@OneToOne, @OneToMany만 사용 가능.
-            Parent findParent = em.find(Parent.class, parent.getId());
-            findParent.getChildList().remove(0);  // orphanRemoval = true설정시, delete쿼리가 나간다.
-
-            //영속성 전이 + 고아 객체, 생명주기
-            //• CascadeType.ALL + orphanRemoval=true
-            //• 스스로 생명주기를 관리하는 엔티티는 em.persist()로 영속화, em.remove()로 제거
-            //• 두 옵션을 모두 활성화 하면 부모 엔티티를 통해서 자식의 생명주기를 관리할 수 있음
-            //• 도메인 주도 설계(DDD)의 Aggregate Root개념을 구현할 때 유용
+            em.persist(member);
 
             tx.commit();
         } catch (Exception e) {
