@@ -16,7 +16,7 @@ public class Member1 extends BaseEntity1 {
 //    @Column(name = "TEAM_ID")
 //    private Long teamId;
 
-    @ManyToOne  //연관관계 매핑 , ManyToOne의 default fetch타입은 EAGER, 외래키가 있는곳을 연관관계의 주인으로 설정하는 것이 좋다.
+    @ManyToOne(fetch = FetchType.LAZY)  //연관관계 매핑 , ManyToOne의 default fetch타입은 EAGER, 외래키가 있는곳을 연관관계의 주인으로 설정하는 것이 좋다.
     @JoinColumn(name = "TEAM_ID")
     private Team team;
 
@@ -49,12 +49,4 @@ public class Member1 extends BaseEntity1 {
         this.username = username;
     }
 
-    @Override
-    public String toString() {
-        return "Member1{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", team=" + team +
-                '}';
-    }
 }

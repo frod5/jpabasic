@@ -44,13 +44,4 @@ public class Team extends BaseEntity1 {
         member1.setTeam(this);
         members.add(member1);
     }
-
-    @Override
-    public String toString() {
-        return "Team{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", members=" + members +
-                '}';
-    }
 }
