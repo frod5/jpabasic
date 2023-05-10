@@ -20,10 +20,38 @@ public class JpaMain {
         tx.begin();
 
         try {
-            Member1 member = new Member1();
-            member.setUsername("hello");
-            member.setHomeAddress(new Address("city","street","zipcode"));  //임베디드 타입 사용
-            member.setWorkPeriod(new Period());  //임베디드 타입 사용
+
+            Address address = new Address("city", "street", "zipcode");
+
+            Member1 member1 = new Member1();
+            member1.setUsername("member1");
+            member1.setHomeAddress(address);  //임베디드 타입 사용
+            member1.setWorkPeriod(new Period());  //임베디드 타입 사용
+            em.persist(member1);
+
+            Address address1 = new Address(address.getCity(),address.getStreet(),address.getZipcode());
+
+            Member1 member2 = new Member1();
+            member2.setUsername("member2");
+            member2.setHomeAddress(address1);  //값을 복제하여 사용하여야 member1만 변경시 member1만 변경된다.
+            member2.setWorkPeriod(new Period());  //임베디드 타입 사용
+            em.persist(member2);
+
+            //첫번째 멤버의 주소의 도시를 변경
+            member1.getHomeAddress().setCity("newCity");
+
+            //member1과 member2가 같은 참조값을 바라보기 때문에 의도치 않게 member2의 도시 값도 newCity로 변경된다.
+            //값을 복사해서 사용해야한다. Address address1 = new Address(address.getCity(),address.getStreet(),address.getZipcode());
+
+            //객체 타입의 한계
+            //• 항상 값을 복사해서 사용하면 공유 참조로 인해 발생하는 부작용을 피할 수 있다.
+            //• 문제는 임베디드 타입처럼 직접 정의한 값 타입은 자바의 기본타입이 아니라 객체 타입이다.
+            //• 자바 기본 타입에 값을 대입하면 값을 복사한다.
+            //• 객체 타입은 참조 값을 직접 대입하는 것을 막을 방법이 없다.
+            //• 객체의 공유 참조는 피할 수 없다.
+
+            //불변객체로 만들어주어야한다. 생성자로만 값을 설정하고 수정자(Setter)를 만들지 않으면 됨. 대표적인 불변객체 ex) 자바 Integer, String
+            //setter가 없으면 변경자체를 못한다 -> 해결방법 새 객체를 만들어서 새 겍체로 변경해주어야 한다.
 
             //임베디드 타입과 테이블 매핑
             //• 임베디드 타입은 엔티티의 값일 뿐이다.
@@ -31,7 +59,6 @@ public class JpaMain {
             //• 객체와 테이블을 아주 세밀하게(find-grained) 매핑하는 것이 가능
             //• 잘 설계한 ORM 애플리케이션은 매핑한 테이블의 수보다 클래스의 수가 더 많음
 
-            em.persist(member);
 
             tx.commit();
         } catch (Exception e) {
