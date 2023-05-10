@@ -20,45 +20,41 @@ public class JpaMain {
         tx.begin();
 
         try {
+            Member1 member = new Member1();
+            member.setUsername("hello");
+            member.setHomeAddress(new Address("homeCity","street","10000"));
 
-            Address address = new Address("city", "street", "zipcode");
+            member.getFavoriteFoods().add("치킨");
+            member.getFavoriteFoods().add("피자");
+            member.getFavoriteFoods().add("족발");
 
-            Member1 member1 = new Member1();
-            member1.setUsername("member1");
-            member1.setHomeAddress(address);  //임베디드 타입 사용
-            member1.setWorkPeriod(new Period());  //임베디드 타입 사용
-            em.persist(member1);
+            member.getAddressHistory().add(new AddressEntity("old1","street","10000"));
+            member.getAddressHistory().add(new AddressEntity("old2","street","10000"));
 
-            Address address1 = new Address(address.getCity(),address.getStreet(),address.getZipcode());
+            em.persist(member);
 
-            Member1 member2 = new Member1();
-            member2.setUsername("member2");
-            member2.setHomeAddress(address1);  //값을 복제하여 사용하여야 member1만 변경시 member1만 변경된다.
-            member2.setWorkPeriod(new Period());  //임베디드 타입 사용
-            em.persist(member2);
+            em.flush();
+            em.clear();
 
-            //첫번째 멤버의 주소의 도시를 변경
-            member1.getHomeAddress().setCity("newCity");
+            System.out.println("=============");
+            Member1 findMember = em.find(Member1.class, member.getId());  //값 타입 컬렉션 -> default 지연로딩
 
-            //member1과 member2가 같은 참조값을 바라보기 때문에 의도치 않게 member2의 도시 값도 newCity로 변경된다.
-            //값을 복사해서 사용해야한다. Address address1 = new Address(address.getCity(),address.getStreet(),address.getZipcode());
+            //치킨 -> 한식
+            findMember.getFavoriteFoods().remove("치킨");
+            findMember.getFavoriteFoods().add("한식");
 
-            //객체 타입의 한계
-            //• 항상 값을 복사해서 사용하면 공유 참조로 인해 발생하는 부작용을 피할 수 있다.
-            //• 문제는 임베디드 타입처럼 직접 정의한 값 타입은 자바의 기본타입이 아니라 객체 타입이다.
-            //• 자바 기본 타입에 값을 대입하면 값을 복사한다.
-            //• 객체 타입은 참조 값을 직접 대입하는 것을 막을 방법이 없다.
-            //• 객체의 공유 참조는 피할 수 없다.
+            //주소히스토리 변경
+            findMember.getAddressHistory().remove(new AddressEntity("old1","street","10000")); //컬렉션은 같은객체를 찾는것을 .equals로 찾기 떄문에 equals를 오버라이딩을 잘해주어야한다.
+            findMember.getAddressHistory().add(new AddressEntity("newCity1","street","10000"));
 
-            //불변객체로 만들어주어야한다. 생성자로만 값을 설정하고 수정자(Setter)를 만들지 않으면 됨. 대표적인 불변객체 ex) 자바 Integer, String
-            //setter가 없으면 변경자체를 못한다 -> 해결방법 새 객체를 만들어서 새 겍체로 변경해주어야 한다.
+            System.out.println("=============");
 
-            //임베디드 타입과 테이블 매핑
-            //• 임베디드 타입은 엔티티의 값일 뿐이다.
-            //• 임베디드 타입을 사용하기 전과 후에 매핑하는 테이블은 같다.
-            //• 객체와 테이블을 아주 세밀하게(find-grained) 매핑하는 것이 가능
-            //• 잘 설계한 ORM 애플리케이션은 매핑한 테이블의 수보다 클래스의 수가 더 많음
-
+            //값 타입 컬렉션은 영속성 전에(Cascade) + 고아 객체 제거 기능을 필수로 가진다고 볼 수 있다.
+            //값 타입 컬렉션의 제약사항
+            //• 값 타입은 엔티티와 다르게 식별자 개념이 없다.
+            //• 값은 변경하면 추적이 어렵다.
+            //• 값 타입 컬렉션에 변경 사항이 발생하면, 주인 엔티티와 연관된 모든 데이터를 삭제하고, 값 타입 컬렉션에 있는 현재 값을 모두 다시 저장한다.
+            //• 값 타입 컬렉션을 매핑하는 테이블은 모든 컬럼을 묶어서 기본키를 구성해야 함: null 입력X, 중복 저장X
 
             tx.commit();
         } catch (Exception e) {
