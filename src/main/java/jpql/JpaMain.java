@@ -32,19 +32,24 @@ public class JpaMain {
             member.changeTeam(team);
             em.persist(member);
 
-            //CASE 실습
-            /*String query = "select " +
-                                "case when m.age <= 10 then '학생요금'" +
-                                "     when m.age >= 60 then '경로요금'" +
-                                "     else '일반요금'" +
-                    "END " +
-                    "from Member2 m";*/
+            Member2 member1 = new Member2();
+//            member.setUsername("member1");
+//            member.setUsername(null);
+            member1.setUsername("관리자2");
+            member1.setAge(10);
+            member1.changeTeam(team);
+            em.persist(member1);
 
-            //coalesce 실습
-//            String query = "select coalesce(m.username,'이름 없는 회원') from Member2 m";
 
-            //nullif 실습 - 두 값이 같으면 null 반환, 다르면 첫번째 값 반환
-            String query = "select nullif(m.username,'관리자') from Member2 m";
+            //JPQL 함수 실습
+//            String query = "select 'a' || 'b' from Member2 m";  //hibernate 구현체로 하는 방법
+//            String query = "select concat('a', 'b') from Member2 m";  // concat()
+//            String query = "select substring(m.username,2,3) from Member2 m";  // substring()
+            //trim(), lower(), upper(), length() 등등..
+
+//            String query = "select locate('de','abcdefg') from Member2 m";  // locate() de가 들어있는 위치 반환 (Integer)
+//            String query = "select size(t.members) from Team2 t";  // size()
+            String query = "select function('group_concat', m.username) from Member2 m";  // 사용자 정의 함수 사용 MyH2Dialect 만들고, persistence.xml 수정 후. select group_concat(m.username) from Member2 m 도 hibernate구현체에서는 가능.
 
             List<String> resultList = em.createQuery(query, String.class).getResultList();
             for (String s : resultList) {
