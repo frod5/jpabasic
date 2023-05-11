@@ -1,6 +1,7 @@
 package jpql;
 
 import javax.persistence.*;
+import java.util.List;
 
 public class JpaMain {
     public static void main(String[] args) {
@@ -25,16 +26,15 @@ public class JpaMain {
 
             em.persist(member);
 
-            TypedQuery<Member2> query1 = em.createQuery("select m from Member2 m where m.username = :username", Member2.class); //return 타입 명시에는 TypedQuery
-            query1.setParameter("username",member.getUsername()); //파라미터 바인딩
+            //프로젝션(SELECT)
+            //select m from Member2 m -> 엔티티 프로젝션 (모두 영속성 컨텍스트로 관리된다. em.find와 같이 리스트의 갯수가 20개면 20개 모두 관리)
+            //• SELECT m.team FROM Member m -> 엔티티 프로젝션
+            //• SELECT m.address FROM Member m -> 임베디드 타입 프로젝션
+            //• SELECT m.username, m.age FROM Member m -> 스칼라 타입 프로젝션
+            List<Member2> result = em.createQuery("select m from Member2 m", Member2.class).getResultList();
 
-
-//            Query query2 = em.createQuery("select m from Member2 m"); //명시 되지 않으면 Query
-
-//            query1.getResultList();  //결과 리스트
-//            query1.getSingleResult(); // 결과가 무조건 하나 일때만 사용해한다. 결과가 없거나 1개 이상 나오면 Exception발생.
-
-
+            Member2 findMember = result.get(0);
+            findMember.setAge(20);
 
             tx.commit();
         } catch (Exception e) {
