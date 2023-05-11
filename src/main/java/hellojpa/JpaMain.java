@@ -1,6 +1,9 @@
 package hellojpa;
 
 import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.List;
 
 public class JpaMain {
@@ -20,8 +23,31 @@ public class JpaMain {
         tx.begin();
 
         try {
-            List<Member1> resultList = em.createQuery("select m from Member1 m where m.username like '%kim%'", Member1.class)
+            //criteria 사용 준비
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<Member1> query = cb.createQuery(Member1.class);
+
+            Root<Member1> m = query.from(Member1.class);
+            CriteriaQuery<Member1> cq = query.select(m);
+
+            String username = "test";
+
+
+            //JPQL 빌더 역할
+            //JPA 공식 기능.
+            //동적 쿼리 사용이 편함.
+            //문자가 아닌 자바코드로 JPQL 작성 가능.
+            if(username != null) {
+                cq = cq.where(cb.equal(m.get("username"), "kim"));
+            }
+
+            List<Member1> resultList = em.createQuery(cq)
                     .getResultList();
+
+            //단점 너무 보기가 불편한다.
+            //실무에서 잘 사용하지 않는다.
+            //criteria 보다는 QueryDSL 사용
+
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
