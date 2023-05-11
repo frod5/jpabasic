@@ -20,21 +20,25 @@ public class JpaMain {
         tx.begin();
 
         try {
-            Member2 member = new Member2();
-            member.setUsername("member1");
-            member.setAge(10);
 
-            em.persist(member);
+            for (int i=0; i<100; i++) {
+                Member2 member = new Member2();
+                member.setUsername("member"+i);
+                member.setAge(i);
+                em.persist(member);
+            }
 
-            //프로젝션(SELECT)
-            //select m from Member2 m -> 엔티티 프로젝션 (모두 영속성 컨텍스트로 관리된다. em.find와 같이 리스트의 갯수가 20개면 20개 모두 관리)
-            //• SELECT m.team FROM Member m -> 엔티티 프로젝션
-            //• SELECT m.address FROM Member m -> 임베디드 타입 프로젝션
-            //• SELECT m.username, m.age FROM Member m -> 스칼라 타입 프로젝션
-            List<Member2> result = em.createQuery("select m from Member2 m", Member2.class).getResultList();
+            List<Member2> result = em.createQuery("select m from Member2 m order by m.age desc", Member2.class)
+                    .setFirstResult(0)  //조회 시작 위치(0부터 시작)
+                    .setMaxResults(10) //조회할 데이터 수
+                    .getResultList();
 
-            Member2 findMember = result.get(0);
-            findMember.setAge(20);
+            System.out.println("result.size = " + result.size());
+
+            for (Member2 member2 : result) {
+                System.out.println("member2 = " + member2);
+            }
+
 
             tx.commit();
         } catch (Exception e) {
