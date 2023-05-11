@@ -20,25 +20,19 @@ public class JpaMain {
         tx.begin();
 
         try {
+            Team2 team = new Team2();
+            team.setName("teamA");
+            em.persist(team);
 
-            for (int i=0; i<100; i++) {
-                Member2 member = new Member2();
-                member.setUsername("member"+i);
-                member.setAge(i);
-                em.persist(member);
-            }
+            Member2 member = new Member2();
+            member.setUsername("member1");
+            member.setAge(10);
+            member.changeTeam(team);
+            em.persist(member);
 
-            List<Member2> result = em.createQuery("select m from Member2 m order by m.age desc", Member2.class)
-                    .setFirstResult(0)  //조회 시작 위치(0부터 시작)
-                    .setMaxResults(10) //조회할 데이터 수
+            String query = "select m from Member2 m inner join m.team t";
+            List<Member2> result = em.createQuery(query, Member2.class)
                     .getResultList();
-
-            System.out.println("result.size = " + result.size());
-
-            for (Member2 member2 : result) {
-                System.out.println("member2 = " + member2);
-            }
-
 
             tx.commit();
         } catch (Exception e) {
