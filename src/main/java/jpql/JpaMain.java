@@ -21,33 +21,55 @@ public class JpaMain {
         tx.begin();
 
         try {
-            Team2 team = new Team2();
-            team.setName("teamA");
-            em.persist(team);
+            Team2 team1 = new Team2();
+            team1.setName("팀A");
+            em.persist(team1);
 
-            Member2 member = new Member2();
-            member.setUsername("관리자");
-            member.setAge(10);
-            member.changeTeam(team);
-            em.persist(member);
+            Team2 team2 = new Team2();
+            team2.setName("팀B");
+            em.persist(team2);
 
             Member2 member1 = new Member2();
-            member1.setUsername("관리자2");
-            member1.setAge(10);
-            member1.changeTeam(team);
+            member1.setUsername("회원1");
+            member1.setTeam(team1);
             em.persist(member1);
 
-            //경로 표현식
-//            String query = "select m.username from Member2 m"; //상태 필드 - 경로 탐색의 끝, 탐색X
-//            String query = "select m.team from Member2 m"; //단일값 연관 경로 - 묵시적 내부조인(inner) 발생, 탐색O. select m.team.name 이런식으로
-            String query = "select m.username from Team2 t join t.members m"; //컬렉션 연관 경로 - 묵시적 내부조인(inner) 발생, 탐색X. from절에서 명시적 조인을 통해 별칭을 얻으면 별칭을 통해 탐색가능
+            Member2 member2 = new Member2();
+            member2.setUsername("회원2");
+            member2.setTeam(team1);
+            em.persist(member2);
 
-            //묵시적 조인은 사용하지 말자. 묵시적 조인은 항상 inner join
-            //명시적 조인 사용 - 명시적 조인은 직접 join문 작성.
+            Member2 member3 = new Member2();
+            member3.setUsername("회원3");
+            member3.setTeam(team2);
+            em.persist(member3);
 
-            Collection resultList = em.createQuery(query, Collection.class).getResultList();
-            for (Object o : resultList) {
-                System.out.println("o = " + o);
+            em.flush();
+            em.clear();
+
+//            String query = "select m from Member2 m";  // N+1 문제 발생
+
+            //fetch join 사용
+//            String query = "select m from Member2 m join fetch m.team";
+
+
+//            String query = "select distinct t from Team2 t join fetch t.members";
+            //distinct를 사용하면 SQL에서도 distinct가 실행되지만 DB에서는 distinct를 한다고해서 데이터가 줄지 않는다.
+            //애플리케이션에서 같은 식별자를 가진 엔티티를 제거해준다.
+
+
+            //일반 조인과 fetch join의 차이
+            //일반 조인 실행시 연관된 엔티티를 함께 조회하지 않음
+            //실제로 조인은 하지만 select절에서 team의 값만 가져와서 해당 값을 사용(getTeam().getName()) 할때 Member를 또 조회해온다.
+            //fetch 조인을 사용할 때만 연관된 엔티티도 함께 조회(즉시로딩)
+            //fetch 조인은 객체 그래프를 SQL 한번에 조회하는 개념.
+            String query = "select t from Team2 t join t.members m";
+
+
+
+            List<Team2> result = em.createQuery(query, Team2.class).getResultList();
+            for (Team2 team : result) {
+                System.out.println("team = " + team.getName() + "|" + team.getMembers().size());
             }
 
             tx.commit();
