@@ -23,8 +23,18 @@ public class JpaMain {
         tx.begin();
 
         try {
-            //Native 쿼리
-            em.createNativeQuery("select MEMBER_ID, CITY, STREET, ZIPCODE FROM MBMBER1").getResultList();
+            //JDBC 또는 springJdbcTemplate등 사용.
+
+            //JPA
+            Member1 member = new Member1();
+            member.setUsername("member1");
+            em.persist(member);
+
+            //dbconn.executeQuery("select * from member1") JDBC사용
+            //jdbc는 JPA가 아니어서 위에서 em.persist를 하여도 실제로 db에 적용은 커밋 이후 이기 떄문에, jdbc로 조회를 하더라도 결과가 나오지 않는다.
+            //결과를 보고싶으면 em.flush를 해줘야한다.
+
+
 
             tx.commit();
         } catch (Exception e) {
