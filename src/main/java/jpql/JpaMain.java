@@ -25,14 +25,34 @@ public class JpaMain {
             em.persist(team);
 
             Member2 member = new Member2();
-            member.setUsername("member1");
+//            member.setUsername("member1");
+//            member.setUsername(null);
+            member.setUsername("관리자");
             member.setAge(10);
             member.changeTeam(team);
             em.persist(member);
 
-            String query = "select m from Member2 m inner join m.team t";
-            List<Member2> result = em.createQuery(query, Member2.class)
-                    .getResultList();
+            //CASE 실습
+            /*String query = "select " +
+                                "case when m.age <= 10 then '학생요금'" +
+                                "     when m.age >= 60 then '경로요금'" +
+                                "     else '일반요금'" +
+                    "END " +
+                    "from Member2 m";*/
+
+            //coalesce 실습
+//            String query = "select coalesce(m.username,'이름 없는 회원') from Member2 m";
+
+            //nullif 실습 - 두 값이 같으면 null 반환, 다르면 첫번째 값 반환
+            String query = "select nullif(m.username,'관리자') from Member2 m";
+
+            List<String> resultList = em.createQuery(query, String.class).getResultList();
+            for (String s : resultList) {
+                System.out.println("s = " + s);
+            }
+
+//            List<Member2> result = em.createQuery(query, Member2.class)
+//                    .getResultList();
 
             tx.commit();
         } catch (Exception e) {
