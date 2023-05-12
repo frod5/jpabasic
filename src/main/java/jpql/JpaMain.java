@@ -47,14 +47,8 @@ public class JpaMain {
             em.flush();
             em.clear();
 
-            //JPQL에서 엔티티를 직접 사용하면 SQL에서 해당 엔티티의 기본 키 값을 사용
-//            String query = "select m from Member2 m where m = :member";
-
-            //JPQL에서 엔티티를 직접 사용하면 SQL에서 해당 엔티티의 외래 키 값을 사용
-            String query = "select m from Member2 m where m.team = :team";
-
-            List<Member2> result = em.createQuery(query, Member2.class)
-                    .setParameter("team",team1)
+            List<Member2> result = em.createNamedQuery("Member.findByUsername", Member2.class)
+                    .setParameter("username", member1.getUsername())
                     .getResultList();
             for (Member2 m : result) {
                 System.out.println("m = " + m);
